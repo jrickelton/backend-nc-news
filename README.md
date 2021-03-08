@@ -14,7 +14,7 @@ In this repo we have provided you with the knexfile. Be sure to add it to the `.
 
 You have also been provided with a `db` folder with some data, a [setup.sql](./db/setup.sql) file, a `seeds` folder and a `utils` folder. You should also take a minute to familiarise yourself with the npm scripts you have been provided.
 
-Your second task is to make accessing both sets of data around your project easier. You should make 3 `index.js` files: one in `db/data`, and one in each of your data folders (test & development).
+Your second task is to make accessing both sets of data around your project easier. You should make 3 `index.js` files: one in `db/data`, and one in each of your data folders (test & development). -DONE
 
 The job of `index.js` in each the data folders is to export out all the data from that folder, currently stored in separate files. This is so that, when you need access to the data elsewhere, you can write one convenient require statement - to the index file, rather than having to require each file individually. Think of it like a index of a book - a place to refer to! Make sure the index file exports an object with values of the data from that folder with the keys:
 
@@ -23,7 +23,9 @@ The job of `index.js` in each the data folders is to export out all the data fro
 - `userData`
 - `commentData`
 
-The job of the `db/data/index.js` file will be to export out of the db folder _only the data relevant to the current environment_. Specifically this file should allow your seed file to access only a specific set of data depending on the environment it's in: test, development or production. To do this it will have to require in all the data and should make use of `process.env` in your `index.js` file to achieve only exporting the right data out.
+-DONE
+
+The job of the `db/data/index.js` file will be to export out of the db folder _only the data relevant to the current environment_. Specifically this file should allow your seed file to access only a specific set of data depending on the environment it's in: test, development or production. To do this it will have to require in all the data and should make use of `process.env` in your `index.js` file to achieve only exporting the right data out. -DONE
 
 **HINT: make sure the keys you export match up with the keys required into the seed file**
 
@@ -44,11 +46,15 @@ Each topic should have:
 - `slug` field which is a unique string that acts as the table's primary key
 - `description` field which is a string giving a brief description of a given topic
 
+-DONE
+
 Each user should have:
 
 - `username` which is the primary key & unique
 - `avatar_url`
 - `name`
+
+-DONE
 
 Each article should have:
 
@@ -166,7 +172,6 @@ GET /api/topics
 ---
 
 **Please now bid farewell to your pair and continue on this sprint working solo. Ensure that you fork your partner's repo so you don't run into merge conflicts.**
-
 
 ```http
 GET /api/users/:username
@@ -337,7 +342,6 @@ GET /api
 Make sure your application and your database is hosted using Heroku
 
 See the hosting.md file in this repo for more guidance
-
 
 #### Pagination
 
