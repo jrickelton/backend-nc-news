@@ -9,5 +9,5 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   console.log("removing users table...");
-  return knew.schema.dropTable("users");
+  return knex.schema.dropTable("users");
 };
