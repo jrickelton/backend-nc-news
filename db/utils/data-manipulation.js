@@ -7,3 +7,14 @@ exports.formatTimestamp = (array) => {
     return newObject;
   });
 };
+
+exports.renameKey = (array, oldKey, newKey) => {
+  const newArr = [...array];
+  if (!array.length) return newArr;
+  return newArr.map((object) => {
+    const newObj = { ...object };
+    newObj[newKey] = newObj[oldKey];
+    delete newObj[oldKey];
+    return newObj;
+  });
+};

@@ -6,6 +6,8 @@ const {
   userData,
 } = require("../data/index");
 
+const { formatTimestamp } = require("../utils/data-manipulation");
+
 exports.seed = function (knex) {
   return knex
     .insert(topicData)
@@ -17,8 +19,9 @@ exports.seed = function (knex) {
         .into("users")
         .returning("*")
         .then((insertedUsers) => {
+          const formattedArticleData = formatTimestamp(articleData);
           return knex
-            .insert(articleData)
+            .insert(formattedArticleData)
             .into("articles")
             .returning("*")
             .then((insertedArticles) => {

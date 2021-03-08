@@ -1,4 +1,4 @@
-const { formatTimestamp } = require("../db/utils/data-manipulation");
+const { formatTimestamp, renameKey } = require("../db/utils/data-manipulation");
 
 describe("formatTimestamp", () => {
   test("should return an empty object when called with an empty object", () => {
@@ -165,5 +165,127 @@ describe("formatTimestamp", () => {
       created_at: 1037708514171,
     });
     expect(output[0]).not.toBe(input[0]);
+  });
+});
+
+describe("renameKey", () => {
+  test("should return an empty array when called with an empty array", () => {
+    expect(renameKey([])).toEqual([]);
+  });
+  test("should rename a specified key when called with an array with a single object", () => {
+    const original = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_name: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    expect(renameKey(original, "belongs_to", "article_name")).toEqual(expected);
+  });
+  test("should return a new array, and not mutate the original", () => {
+    const original = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    expect(renameKey(original, "belongs_to", "article_name")).not.toBe(
+      original
+    );
+  });
+  test("should work on an array of several objects", () => {
+    const original = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389,
+      },
+      {
+        body:
+          "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        belongs_to: "Living in the shadow of a great man",
+        created_by: "icellusedkars",
+        votes: 100,
+        created_at: 1448282163389,
+      },
+    ];
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_name: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        article_name: "Living in the shadow of a great man",
+        created_by: "butter_bridge",
+        votes: 14,
+        created_at: 1479818163389,
+      },
+      {
+        body:
+          "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        article_name: "Living in the shadow of a great man",
+        created_by: "icellusedkars",
+        votes: 100,
+        created_at: 1448282163389,
+      },
+    ];
+    expect(renameKey(original, "belongs_to", "article_name")).toEqual(expected);
+  });
+  test("should not mutate any of the objects in the array", () => {
+    const original = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      },
+    ];
+    expect(renameKey(original, "belongs_to", "article_name")[0]).not.toBe(
+      original[0]
+    );
+    expect(renameKey(original, "belongs_to", "article_name")[0]).toEqual({
+      body:
+        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_name: "They're not exactly dogs, are they?",
+      created_by: "butter_bridge",
+      votes: 16,
+      created_at: 1511354163389,
+    });
   });
 });
