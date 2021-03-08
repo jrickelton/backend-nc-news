@@ -10,7 +10,7 @@
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
     "view-tables": "psql -f ./db/view-tables.sql",
-    "test": "jest"
+    "test": "jest __tests__ --watch"
   },
   "repository": {
     "type": "git",

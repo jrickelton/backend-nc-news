@@ -17,7 +17,13 @@ exports.seed = function (knex) {
         .into("users")
         .returning("*")
         .then((insertedUsers) => {
-          console.log(insertedUsers);
+          return knex
+            .insert(articleData)
+            .into("articles")
+            .returning("*")
+            .then((insertedArticles) => {
+              console.log(insertedArticles);
+            });
         });
     });
 };
