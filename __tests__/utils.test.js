@@ -1,4 +1,9 @@
-const { formatTimestamp, renameKey } = require("../db/utils/data-manipulation");
+const {
+  formatTimestamp,
+  renameKey,
+  createRefObject,
+  addKeyFromRefObject,
+} = require("../db/utils/data-manipulation");
 
 describe("formatTimestamp", () => {
   test("should return an empty object when called with an empty object", () => {
@@ -109,62 +114,64 @@ describe("formatTimestamp", () => {
     ];
     expect(formatTimestamp(input)).toEqual(expected);
   });
-  test("should not mutate original array or objects within", () => {
-    const input = [
-      {
+  describe("side effects", () => {
+    test("should not mutate original array or objects within", () => {
+      const input = [
+        {
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: 1037708514171,
+        },
+        {
+          title: "A",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "Delicious tin of cat food",
+          created_at: 911564514171,
+        },
+        {
+          title: "Z",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "I was hungry.",
+          created_at: 785420514171,
+        },
+      ];
+      const output = formatTimestamp(input);
+      expect(input).toEqual([
+        {
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: 1037708514171,
+        },
+        {
+          title: "A",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "Delicious tin of cat food",
+          created_at: 911564514171,
+        },
+        {
+          title: "Z",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "I was hungry.",
+          created_at: 785420514171,
+        },
+      ]);
+      expect(input[0]).toEqual({
         title: "UNCOVERED: catspiracy to bring down democracy",
         topic: "cats",
         author: "rogersop",
         body: "Bastet walks amongst us, and the cats are taking arms!",
         created_at: 1037708514171,
-      },
-      {
-        title: "A",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "Delicious tin of cat food",
-        created_at: 911564514171,
-      },
-      {
-        title: "Z",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "I was hungry.",
-        created_at: 785420514171,
-      },
-    ];
-    const output = formatTimestamp(input);
-    expect(input).toEqual([
-      {
-        title: "UNCOVERED: catspiracy to bring down democracy",
-        topic: "cats",
-        author: "rogersop",
-        body: "Bastet walks amongst us, and the cats are taking arms!",
-        created_at: 1037708514171,
-      },
-      {
-        title: "A",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "Delicious tin of cat food",
-        created_at: 911564514171,
-      },
-      {
-        title: "Z",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "I was hungry.",
-        created_at: 785420514171,
-      },
-    ]);
-    expect(input[0]).toEqual({
-      title: "UNCOVERED: catspiracy to bring down democracy",
-      topic: "cats",
-      author: "rogersop",
-      body: "Bastet walks amongst us, and the cats are taking arms!",
-      created_at: 1037708514171,
+      });
+      expect(output[0]).not.toBe(input[0]);
     });
-    expect(output[0]).not.toBe(input[0]);
   });
 });
 
@@ -265,27 +272,265 @@ describe("renameKey", () => {
     ];
     expect(renameKey(original, "belongs_to", "article_name")).toEqual(expected);
   });
-  test("should not mutate any of the objects in the array", () => {
-    const original = [
+  describe("side effects", () => {
+    test("should not mutate any of the objects in the array", () => {
+      const original = [
+        {
+          body:
+            "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          belongs_to: "They're not exactly dogs, are they?",
+          created_by: "butter_bridge",
+          votes: 16,
+          created_at: 1511354163389,
+        },
+      ];
+      expect(renameKey(original, "belongs_to", "article_name")[0]).not.toBe(
+        original[0]
+      );
+      expect(renameKey(original, "belongs_to", "article_name")[0]).toEqual({
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_name: "They're not exactly dogs, are they?",
+        created_by: "butter_bridge",
+        votes: 16,
+        created_at: 1511354163389,
+      });
+    });
+  });
+});
+
+describe("createRefObject", () => {
+  test("should return an empty object when called with an empty array", () => {
+    expect(createRefObject([])).toEqual({});
+  });
+  test("should return an object with a key and value set to the corresponding values declared as parameters", () => {
+    const input = [
+      {
+        article_id: 10,
+        title: "Seven inspirational thought leaders from Manchester UK",
+        body: "Who are we kidding, there is only one, and it's Mitch!",
+        votes: 0,
+        topic: "mitch",
+        author: "rogersop",
+      },
+    ];
+    const expected = {
+      "Seven inspirational thought leaders from Manchester UK": 10,
+    };
+    expect(createRefObject(input, "title", "article_id")).toEqual(expected);
+  });
+  test("should work on an array of several objects", () => {
+    const input = [
+      {
+        article_id: 10,
+        title: "Seven inspirational thought leaders from Manchester UK",
+        body: "Who are we kidding, there is only one, and it's Mitch!",
+        votes: 0,
+        topic: "mitch",
+        author: "rogersop",
+      },
+      {
+        article_id: 11,
+        title: "Am I a cat?",
+        body:
+          "Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?",
+        votes: 0,
+        topic: "mitch",
+        author: "icellusedkars",
+      },
+      {
+        article_id: 12,
+        title: "Moustache",
+        body: "Have you seen the size of that thing?",
+        votes: 0,
+        topic: "mitch",
+        author: "butter_bridge",
+      },
+    ];
+    const expected = {
+      "Seven inspirational thought leaders from Manchester UK": 10,
+      "Am I a cat?": 11,
+      Moustache: 12,
+    };
+    expect(createRefObject(input, "title", "article_id")).toEqual(expected);
+  });
+  describe("side effects", () => {
+    test("should not mutate original array or objects within", () => {
+      const input = [
+        {
+          article_id: 10,
+          title: "Seven inspirational thought leaders from Manchester UK",
+          body: "Who are we kidding, there is only one, and it's Mitch!",
+          votes: 0,
+          topic: "mitch",
+          author: "rogersop",
+        },
+      ];
+      const expected = {
+        "Seven inspirational thought leaders from Manchester UK": 10,
+      };
+      createRefObject(input, "title", "article_id");
+      expect(input).toEqual([
+        {
+          article_id: 10,
+          title: "Seven inspirational thought leaders from Manchester UK",
+          body: "Who are we kidding, there is only one, and it's Mitch!",
+          votes: 0,
+          topic: "mitch",
+          author: "rogersop",
+        },
+      ]);
+    });
+  });
+});
+
+describe("addKeyFromRefObject", () => {
+  test("should return an empty array when called with an empty array", () => {
+    expect(addKeyFromRefObject([], {}, "", "")).toEqual([]);
+  });
+  test("should replace a key using the reference object to find the corresponding value on a single item", () => {
+    const array = [
       {
         body:
           "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
         belongs_to: "They're not exactly dogs, are they?",
-        created_by: "butter_bridge",
         votes: 16,
-        created_at: 1511354163389,
+        created_at: "2017-11-22T12:36:03.389Z",
+        author: "butter_bridge",
       },
     ];
-    expect(renameKey(original, "belongs_to", "article_name")[0]).not.toBe(
-      original[0]
-    );
-    expect(renameKey(original, "belongs_to", "article_name")[0]).toEqual({
-      body:
-        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      article_name: "They're not exactly dogs, are they?",
-      created_by: "butter_bridge",
-      votes: 16,
-      created_at: 1511354163389,
+    const refObj = {
+      "They're not exactly dogs, are they?": 9,
+    };
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 9,
+        votes: 16,
+        created_at: "2017-11-22T12:36:03.389Z",
+        author: "butter_bridge",
+      },
+    ];
+    expect(
+      addKeyFromRefObject(array, refObj, "belongs_to", "article_id")
+    ).toEqual(expected);
+  });
+  test("should work on an array of objects", () => {
+    const input = [
+      {
+        body: "This is a bad article name",
+        belongs_to: "A",
+        votes: 1,
+        created_at: "2002-11-26T12:36:03.389Z",
+        author: "butter_bridge",
+      },
+      {
+        body: "The owls are not what they seem.",
+        belongs_to: "They're not exactly dogs, are they?",
+        votes: 20,
+        created_at: "2001-11-26T12:36:03.389Z",
+        author: "icellusedkars",
+      },
+      {
+        body: "This morning, I showered for nine minutes.",
+        belongs_to: "Living in the shadow of a great man",
+        votes: 16,
+        created_at: "2000-11-26T12:36:03.389Z",
+        author: "butter_bridge",
+      },
+    ];
+    const refObject = {
+      "Living in the shadow of a great man": 1,
+      A: 6,
+      "They're not exactly dogs, are they?": 9,
+    };
+    const expected = [
+      {
+        body: "This is a bad article name",
+        article_id: 6,
+        votes: 1,
+        created_at: "2002-11-26T12:36:03.389Z",
+        author: "butter_bridge",
+      },
+      {
+        body: "The owls are not what they seem.",
+        article_id: 9,
+        votes: 20,
+        created_at: "2001-11-26T12:36:03.389Z",
+        author: "icellusedkars",
+      },
+      {
+        body: "This morning, I showered for nine minutes.",
+        article_id: 1,
+        votes: 16,
+        created_at: "2000-11-26T12:36:03.389Z",
+        author: "butter_bridge",
+      },
+    ];
+    expect(
+      addKeyFromRefObject(input, refObject, "belongs_to", "article_id")
+    ).toEqual(expected);
+  });
+  describe("side effects", () => {
+    test("should return a new array and objects, not mutating the original inputs", () => {
+      const input = [
+        {
+          body: "This is a bad article name",
+          belongs_to: "A",
+          votes: 1,
+          created_at: "2002-11-26T12:36:03.389Z",
+          author: "butter_bridge",
+        },
+        {
+          body: "The owls are not what they seem.",
+          belongs_to: "They're not exactly dogs, are they?",
+          votes: 20,
+          created_at: "2001-11-26T12:36:03.389Z",
+          author: "icellusedkars",
+        },
+        {
+          body: "This morning, I showered for nine minutes.",
+          belongs_to: "Living in the shadow of a great man",
+          votes: 16,
+          created_at: "2000-11-26T12:36:03.389Z",
+          author: "butter_bridge",
+        },
+      ];
+      const refObject = {
+        "Living in the shadow of a great man": 1,
+        A: 6,
+        "They're not exactly dogs, are they?": 9,
+      };
+      const expected = [
+        {
+          body: "This is a bad article name",
+          article_id: 6,
+          votes: 1,
+          created_at: "2002-11-26T12:36:03.389Z",
+          author: "butter_bridge",
+        },
+        {
+          body: "The owls are not what they seem.",
+          article_id: 9,
+          votes: 20,
+          created_at: "2001-11-26T12:36:03.389Z",
+          author: "icellusedkars",
+        },
+        {
+          body: "This morning, I showered for nine minutes.",
+          article_id: 1,
+          votes: 16,
+          created_at: "2000-11-26T12:36:03.389Z",
+          author: "butter_bridge",
+        },
+      ];
+      expect(
+        addKeyFromRefObject(input, refObject, "belongs_to", "article_id")
+      ).not.toBe(input);
+      expect(
+        addKeyFromRefObject(input, refObject, "belongs_to", "article_id")[0]
+      ).not.toBe(input[0]);
     });
   });
 });
