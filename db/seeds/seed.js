@@ -6,27 +6,49 @@ const {
   userData,
 } = require("../data/index");
 
-const { formatTimestamp } = require("../utils/data-manipulation");
+const {
+  formatTimestamp,
+  renameKey,
+  createRefObject,
+  addKeyFromRefObject,
+} = require("../utils/data-manipulation");
 
 exports.seed = function (knex) {
-  return knex
-    .insert(topicData)
-    .into("topics")
-    .returning("*")
-    .then((insertedTopics) => {
+  return knex.migrate
+    .rollback()
+    .then(() => knex.migrate.latest())
+    .then(() => {
       return knex
-        .insert(userData)
-        .into("users")
+        .insert(topicData)
+        .into("topics")
         .returning("*")
-        .then((insertedUsers) => {
-          const formattedArticleData = formatTimestamp(articleData);
-          return knex
-            .insert(formattedArticleData)
-            .into("articles")
-            .returning("*")
-            .then((insertedArticles) => {
-              console.log(insertedArticles);
-            });
+        .then((insertedTopics) => {
+          return knex.insert(userData).into("users").returning("*");
         });
+    })
+    .then((insertedUsers) => {
+      const formattedArticleData = formatTimestamp(articleData);
+      return knex.insert(formattedArticleData).into("articles").returning("*");
+    })
+    .then((insertedArticles) => {
+      const articleNameAndIDRef = createRefObject(
+        insertedArticles,
+        "title",
+        "article_id"
+      );
+
+      const formattedCommentsData = addKeyFromRefObject(
+        renameKey(formatTimestamp(commentData), "created_by", "author"),
+        articleNameAndIDRef,
+        "belongs_to",
+        "article_id"
+      );
+
+      return knex.insert(formattedCommentsData).into("comments").returning("*");
     });
 };
+
+//format created_at timestamp
+//change created_by to author
+//make createRefObject func
+//add article_id based on belongs_to
