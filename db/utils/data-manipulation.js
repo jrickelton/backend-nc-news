@@ -21,7 +21,7 @@ exports.renameKey = (array, oldKey, newKey) => {
 
 exports.createRefObject = (array, key, value) => {
   const refObject = {};
-  if (!array.length) return refObject;
+
   array.forEach((object) => {
     refObject[object[key]] = object[value];
   });
@@ -30,7 +30,7 @@ exports.createRefObject = (array, key, value) => {
 
 exports.addKeyFromRefObject = (array, refObject, keyToReplace, keyToAdd) => {
   const newArr = [...array];
-  if (!newArr.length) return newArr;
+
   return newArr.map((obj) => {
     newObj = { ...obj };
     newObj[keyToAdd] = refObject[obj[keyToReplace]];

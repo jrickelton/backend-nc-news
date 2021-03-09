@@ -45,6 +45,9 @@ exports.seed = function (knex) {
       );
 
       return knex.insert(formattedCommentsData).into("comments").returning("*");
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 

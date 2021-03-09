@@ -32,38 +32,15 @@ describe("formatTimestamp", () => {
   test("should re-format a unix timestamp in the created_at property in a single object", () => {
     const input = [
       {
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
         created_at: 1542284514171,
-        votes: 100,
       },
     ];
     const expected = [
       {
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
         created_at: "2018-11-15T12:21:54.171Z",
-        votes: 100,
       },
     ];
     expect(formatTimestamp(input)).toEqual(expected);
-  });
-  test("should return a new array", () => {
-    const input = [
-      {
-        title: "Living in the shadow of a great man",
-        topic: "mitch",
-        author: "butter_bridge",
-        body: "I find this existence challenging",
-        created_at: 1542284514171,
-        votes: 100,
-      },
-    ];
-    expect(formatTimestamp(input)).not.toBe(input);
   });
   test("should work on an array of several objects", () => {
     const input = [
@@ -89,6 +66,7 @@ describe("formatTimestamp", () => {
         created_at: 785420514171,
       },
     ];
+    //test that IS date
     const expected = [
       {
         title: "UNCOVERED: catspiracy to bring down democracy",
@@ -273,7 +251,7 @@ describe("renameKey", () => {
     expect(renameKey(original, "belongs_to", "article_name")).toEqual(expected);
   });
   describe("side effects", () => {
-    test("should not mutate any of the objects in the array", () => {
+    test("should not mutate any of the objects in the original array", () => {
       const original = [
         {
           body:
