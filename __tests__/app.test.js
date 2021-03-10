@@ -46,14 +46,62 @@ describe("/api", () => {
             });
           });
       });
-      test(":( GET /api/users/not_a_username -> status: 404, message: 'No user found with username: not_a_username' when username is not found", () => {
+      test(":( GET /api/users/not_a_username -> status: 404, msg: 'No user found with username: not_a_username' when username is not found", () => {
         return request(app)
           .get("/api/users/not_a_username")
           .expect(404)
-          .then((res) => {
-            expect(res.body.error.message).toBe(
-              "No user found with username: not_a_username"
-            );
+          .then(({ body }) => {
+            expect(body.err).toMatchObject({
+              status: 404,
+              msg: "No user found with username: not_a_username",
+            });
+          });
+      });
+    });
+  });
+  describe("/articles", () => {
+    describe(":article_id", () => {
+      test(":) GET /api/articles/1 -> status: 200, and article object corresponding to parametric endpoint when article is found", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toMatchObject({
+              article: [
+                {
+                  author: "butter_bridge",
+                  title: "Living in the shadow of a great man",
+                  article_id: 1,
+                  body: "I find this existence challenging",
+                  topic: "mitch",
+                  created_at: "2018-11-15T12:21:54.171Z",
+                  votes: 100,
+                  comment_count: "13",
+                },
+              ],
+            });
+          });
+      });
+      test(":( GET /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article cannot be found", () => {
+        return request(app)
+          .get("/api/articles/999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.err).toMatchObject({
+              status: 404,
+              msg: "No article found with article_id: 999",
+            });
+          });
+      });
+      test(":( GET /api/articles/not_an_article_id -> status: 400, msg: 'Bad request'", () => {
+        return request(app)
+          .get("/api/articles/not_an_article_id")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.err).toMatchObject({
+              status: 400,
+              msg: "Bad request",
+            });
           });
       });
     });

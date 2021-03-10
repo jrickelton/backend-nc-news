@@ -1,6 +1,11 @@
+exports.handle400s = (err, req, res, next) => {
+  if (err.code === "22P02") {
+    res.status(400).send({ err: { status: 400, msg: "Bad request" } });
+  }
+};
 exports.handle404s = (err, req, res, next) => {
   if (err.status === 404) {
-    res.status(404).send({ error: { message: err.msg, status: err.status } });
+    res.status(404).send({ err });
   } else next(err);
 };
 
