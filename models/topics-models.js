@@ -5,6 +5,6 @@ exports.fetchTopics = () => {
     .select("slug", "description")
     .from("topics")
     .then((topics) => {
-      return topics;
+      return { topics };
     });
 };
