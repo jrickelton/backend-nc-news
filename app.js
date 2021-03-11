@@ -3,6 +3,7 @@ const app = express();
 const { apiRouter } = require("./routes/apiRouter");
 const { handle400s, handle404s, handle500s } = require("./error-handlers");
 
+app.use(express.json()); // -why do I need this to access body of post/patch?
 app.use("/api", apiRouter);
 
 app.use("/", handle404s); //can't get app.all to work?

@@ -1,6 +1,6 @@
 const { dbConnection } = require("../db/connection");
 
-exports.fetchArticlesById = (article_id) => {
+const fetchArticleById = (article_id) => {
   return dbConnection
     .select(
       "articles.article_id",
@@ -25,3 +25,34 @@ exports.fetchArticlesById = (article_id) => {
       return article;
     });
 };
+
+const updateArticleVotes = (article_id, vote) => {
+  return dbConnection
+    .select("votes")
+    .from("articles")
+    .where("articles.article_id", article_id)
+    .returning("*")
+    .then((votesData) => {
+      if (!votesData.length) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found with article_id: ${article_id}`,
+        });
+      }
+      votesData[0].votes += vote;
+      return dbConnection
+        .select("votes")
+        .from("articles")
+        .where("articles.article_id", article_id)
+        .update(votesData[0])
+        .returning("article_id");
+    })
+    .then((article_id) => {
+      return fetchArticleById(...article_id);
+    })
+    .then((articleData) => {
+      return articleData;
+    });
+};
+
+module.exports = { fetchArticleById, updateArticleVotes };

@@ -11,98 +11,185 @@ afterAll(() => {
 
 describe("/api", () => {
   describe("/topics", () => {
-    test(":) GET /api/topics -> status: 200, and array of topics objects", () => {
-      return request(app)
-        .get("/api/topics")
-        .expect(200)
-        .then(({ body: { topics } }) => {
-          expect(Array.isArray(topics)).toBe(true);
-          expect(topics.length).toBe(3);
-          topics.forEach((topic) => {
-            expect(topic).toMatchObject({
-              slug: expect.any(String),
-              description: expect.any(String),
+    describe("GET", () => {
+      test(":) GET /api/topics -> status: 200, and array of topics objects", () => {
+        return request(app)
+          .get("/api/topics")
+          .expect(200)
+          .then(({ body: { topics } }) => {
+            expect(Array.isArray(topics)).toBe(true);
+            expect(topics.length).toBe(3);
+            topics.forEach((topic) => {
+              expect(topic).toMatchObject({
+                slug: expect.any(String),
+                description: expect.any(String),
+              });
             });
           });
-        });
+      });
     });
   });
   describe("/users", () => {
     describe("/:username", () => {
-      test(":) GET /api/users/butter_bridge -> status: 200, and user object corresponding to parametric endpoint when user is found", () => {
-        return request(app)
-          .get("/api/users/butter_bridge")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body).toMatchObject({
-              user: [
-                {
-                  username: "butter_bridge",
-                  avatar_url:
-                    "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
-                  name: "jonny",
-                },
-              ],
+      describe("GET", () => {
+        test(":) GET /api/users/butter_bridge -> status: 200, and user object corresponding to parametric endpoint when user is found", () => {
+          return request(app)
+            .get("/api/users/butter_bridge")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).toMatchObject({
+                user: [
+                  {
+                    username: "butter_bridge",
+                    avatar_url:
+                      "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+                    name: "jonny",
+                  },
+                ],
+              });
             });
-          });
-      });
-      test(":( GET /api/users/not_a_username -> status: 404, msg: 'No user found with username: not_a_username' when username is not found", () => {
-        return request(app)
-          .get("/api/users/not_a_username")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.err).toMatchObject({
-              status: 404,
-              msg: "No user found with username: not_a_username",
+        });
+        test(":( GET /api/users/not_a_username -> status: 404, msg: 'No user found with username: not_a_username' when username is not found", () => {
+          return request(app)
+            .get("/api/users/not_a_username")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 404,
+                msg: "No user found with username: not_a_username",
+              });
             });
-          });
+        });
       });
     });
   });
   describe("/articles", () => {
     describe(":article_id", () => {
-      test(":) GET /api/articles/1 -> status: 200, and article object corresponding to parametric endpoint when article is found", () => {
-        return request(app)
-          .get("/api/articles/1")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body).toMatchObject({
-              article: [
-                {
+      describe("GET", () => {
+        test(":) GET /api/articles/1 -> status: 200, and article object corresponding to parametric endpoint when article is found", () => {
+          return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).toMatchObject({
+                article: [
+                  {
+                    author: "butter_bridge",
+                    title: "Living in the shadow of a great man",
+                    article_id: 1,
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    created_at: "2018-11-15T12:21:54.171Z",
+                    votes: 100,
+                    comment_count: "13",
+                  },
+                ],
+              });
+            });
+        });
+        test(":( GET /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article cannot be found", () => {
+          return request(app)
+            .get("/api/articles/999")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 404,
+                msg: "No article found with article_id: 999",
+              });
+            });
+        });
+        test(":( GET /api/articles/not_an_article_id -> status: 400, msg: 'Bad request'", () => {
+          return request(app)
+            .get("/api/articles/not_an_article_id")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 400,
+                msg: "Bad request",
+              });
+            });
+        });
+      });
+      describe("PATCH", () => {
+        test(":) PATCH /api/articles/1 with { inc_votes: newVote } -> status: 200 and article data with votes increased or decreased by newVote value when valid vote object { inc_votes: 1 } posted", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).toMatchObject({
+                article: [
+                  {
+                    author: "butter_bridge",
+                    title: "Living in the shadow of a great man",
+                    article_id: 1,
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    created_at: "2018-11-15T12:21:54.171Z",
+                    votes: 101,
+                    comment_count: "13",
+                  },
+                ],
+              });
+            });
+        });
+        test(":( PATCH /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article cannot be found", () => {
+          return request(app)
+            .patch("/api/articles/999")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 404,
+                msg: "No article found with article_id: 999",
+              });
+            });
+        });
+        test(":( PATCH /api/articles/not_an_article_id -> status: 404, msg: 'Bad request", () => {
+          return request(app)
+            .patch("/api/articles/not_an_article_id")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 400,
+                msg: "Bad request",
+              });
+            });
+        });
+
+        test(":( PATCH /api/articles/1 with { incorrect_property: newVote } -> status: 400, msg: 'Bad request'", () => {
+          return request(app)
+            .patch("/api/articles/1")
+            .send({ incorrect_property: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.err).toMatchObject({
+                status: 400,
+                msg: "Bad request",
+              });
+            });
+        });
+      });
+      describe("/comments", () => {
+        describe("POST", () => {
+          test(':) POST /api/articles/2/comments -> status: 200, and new comment object when valid new comment object { username: "butter_bridge" body: "test comment" } posted', () => {
+            return request(app)
+              .post("/api/articles/2/comments")
+              .send({ username: "butter_bridge", body: "test comment" })
+              .expect(200)
+              .then(({ body }) => {
+                expect(body).toMatchObject({
+                  comment_id: 1,
                   author: "butter_bridge",
-                  title: "Living in the shadow of a great man",
-                  article_id: 1,
-                  body: "I find this existence challenging",
-                  topic: "mitch",
-                  created_at: "2018-11-15T12:21:54.171Z",
-                  votes: 100,
-                  comment_count: "13",
-                },
-              ],
-            });
+                  article_id: 2,
+                  votes: 0,
+                  created_at: expect.any(Date()),
+                  body: "test comment",
+                });
+              });
           });
-      });
-      test(":( GET /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article cannot be found", () => {
-        return request(app)
-          .get("/api/articles/999")
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.err).toMatchObject({
-              status: 404,
-              msg: "No article found with article_id: 999",
-            });
-          });
-      });
-      test(":( GET /api/articles/not_an_article_id -> status: 400, msg: 'Bad request'", () => {
-        return request(app)
-          .get("/api/articles/not_an_article_id")
-          .expect(400)
-          .then(({ body }) => {
-            expect(body.err).toMatchObject({
-              status: 400,
-              msg: "Bad request",
-            });
-          });
+        });
       });
     });
   });
