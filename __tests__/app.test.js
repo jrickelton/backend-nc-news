@@ -226,7 +226,7 @@ describe("/api", () => {
               });
           });
           describe("?sort_by=", () => {
-            test(":) GET /api/articles/1/comments?sort_by=author -> status: 200, returns array of comments for the given article sorted by author", () => {
+            test(":) GET /api/articles/1/comments?sort_by=author -> status: 200, returns array of comments for the given article sorted by author (defaults to descending)", () => {
               return request(app)
                 .get("/api/articles/1/comments?sort_by=author")
                 .expect(200)
@@ -236,6 +236,17 @@ describe("/api", () => {
                     descending: true,
                   });
                 });
+            });
+            describe("&order_by=asc", () => {
+              test(":) GET /api/articles/1/comments?sort_by=author&order_by=asc -> status: 200, returns array of comments for the given article sorted by author ascending", () => {
+                return request(app)
+                  .get("/api/articles/1/comments?sort_by=author&order_by=asc")
+                  .expect(200)
+                  .then(({ body }) => {
+                    expect(body.comments).toHaveLength(13);
+                    expect(body.comments).toBeSortedBy("author");
+                  });
+              });
             });
           });
         });

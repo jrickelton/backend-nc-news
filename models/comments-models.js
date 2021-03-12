@@ -26,12 +26,12 @@ exports.writeCommentByArticleId = ({ article_id }, { username, body }) => {
     });
 };
 
-exports.fetchCommentsByArticleId = (article_id, { sort_by }) => {
+exports.fetchCommentsByArticleId = (article_id, { sort_by, order_by }) => {
   return dbConnection
     .select("*")
     .from("comments")
     .where("article_id", article_id)
-    .orderBy(sort_by || "created_at", "desc")
+    .orderBy(sort_by || "created_at", order_by || "desc")
     .returning("*")
     .then((commentsData) => {
       if (!commentsData.length) {
