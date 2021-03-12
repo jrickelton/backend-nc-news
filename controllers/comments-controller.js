@@ -20,9 +20,13 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.getArticleCommentsByArticleId = (req, res, next) => {
-  fetchCommentsByArticleId(req.params.article_id)
-    .then((commentsData) => {
-      res.send({ comments: commentsData }).status(200);
+  Promise.all([
+    checkArticleExists(req.params.article_id),
+    fetchCommentsByArticleId(req.params.article_id),
+  ])
+
+    .then((data) => {
+      res.send({ comments: data[1] }).status(200);
     })
     .catch((err) => {
       next(err);

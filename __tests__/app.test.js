@@ -188,7 +188,7 @@ describe("/api", () => {
                 });
               });
           });
-          test.only(':( GET /api/articles/2/comments -> status: 404, msg: "This article (article id: 2) currently has no comments" for a valid article with no comments', () => {
+          test(':( GET /api/articles/2/comments -> status: 404, msg: "This article (article id: 2) currently has no comments" for a valid article with no comments', () => {
             return request(app)
               .get("/api/articles/2/comments")
               .expect(404)
@@ -198,6 +198,20 @@ describe("/api", () => {
                   msg: "This article (article id: 2) currently has no comments",
                 });
               });
+          });
+          test(':( GET /api/articles/999/comments -> status: 404, msg: "No article found with article_id: 999" when valid but non-existent article_id is requested', () => {
+            return request(app)
+              .get("/api/articles/999/comments")
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 404,
+                  msg: "No article found with article_id: 999",
+                });
+              });
+          });
+          test(':( GET /api/articles/not_a_number/comments -> status 400, msg: "Bad request', () => {
+            return request(app);
           });
         });
         describe("POST", () => {
