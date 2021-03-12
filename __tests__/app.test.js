@@ -173,7 +173,7 @@ describe("/api", () => {
       });
       describe("/comments", () => {
         describe("GET", () => {
-          test(":) GET /api/articles/1/comments -> status: 200 and array of comments for the given article id", () => {
+          test(":) GET /api/articles/1/comments -> status: 200 and array of comments for the given article id, sorted by created_at by default", () => {
             return request(app)
               .get("/api/articles/1/comments")
               .expect(200)
@@ -185,6 +185,10 @@ describe("/api", () => {
                   created_at: expect.any(String),
                   author: expect.any(String),
                   body: expect.any(String),
+                });
+                expect(body.comments).toBeSortedBy("created_at", {
+                  descending: true,
+                  coerce: true,
                 });
               });
           });
@@ -211,7 +215,15 @@ describe("/api", () => {
               });
           });
           test(':( GET /api/articles/not_a_number/comments -> status 400, msg: "Bad request', () => {
-            return request(app);
+            return request(app)
+              .get("/api/articles/not_a_number")
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 400,
+                  msg: "Bad request",
+                });
+              });
           });
         });
         describe("POST", () => {

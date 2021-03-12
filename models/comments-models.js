@@ -31,6 +31,7 @@ exports.fetchCommentsByArticleId = (article_id) => {
     .select("*")
     .from("comments")
     .where("article_id", article_id)
+    .orderBy("created_at", "desc")
     .returning("*")
     .then((commentsData) => {
       if (!commentsData.length) {
