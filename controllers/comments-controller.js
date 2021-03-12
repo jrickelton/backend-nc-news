@@ -4,7 +4,7 @@ const { checkUsernameExists } = require("../models/users-models");
 
 exports.postCommentByArticleId = (req, res, next) => {
   Promise.all([
-    checkArticleExists(req.params),
+    checkArticleExists(req.params.article_id),
     checkUsernameExists(req.body.username),
     writeCommentByArticleId(req.params, req.body),
   ])

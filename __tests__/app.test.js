@@ -145,7 +145,7 @@ describe("/api", () => {
               });
             });
         });
-        test(":( PATCH /api/articles/not_an_article_id -> status: 404, msg: 'Bad request", () => {
+        test(":( PATCH /api/articles/not_an_article_id -> status: 400, msg: 'Bad request", () => {
           return request(app)
             .patch("/api/articles/not_an_article_id")
             .send({ inc_votes: 1 })

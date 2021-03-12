@@ -1,10 +1,6 @@
 exports.handle400s = (err, req, res, next) => {
-  if (err.code === "22P02") {
-    res.status(400).send({ err: { status: 400, msg: "Bad request" } });
-  } else if ((err.code = "23502")) {
-    res
-      .status(400)
-      .send({ err: { status: 400, msg: "No comment body provided" } });
+  if (err.status === 400) {
+    res.status(400).send({ err });
   } else next(err);
 };
 exports.handle404s = (err, req, res, next) => {
