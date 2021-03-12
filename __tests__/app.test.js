@@ -237,6 +237,17 @@ describe("/api", () => {
                   });
                 });
             });
+            test(':( GET /api/articles/1/comments?sort_by=not_a_column -> status: 400, msg: "Bad request', () => {
+              return request(app)
+                .get("/api/articles/1/comments?sort_by=not_a_column")
+                .expect(400)
+                .then(({ body }) => {
+                  expect(body).toMatchObject({
+                    status: 400,
+                    msg: "Bad request",
+                  });
+                });
+            });
             describe("&order_by=asc", () => {
               test(":) GET /api/articles/1/comments?sort_by=author&order_by=asc -> status: 200, returns array of comments for the given article sorted by author ascending", () => {
                 return request(app)
