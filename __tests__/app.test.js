@@ -236,6 +236,18 @@ describe("/api", () => {
                 });
               });
           });
+          test(':( POST /api/articles/1/comments -> status: 400, msg: "No comment body provided" when posted object body is null', () => {
+            return request(app)
+              .post("/api/articles/1/comments")
+              .send({ username: "butter_bridge", body: null })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 400,
+                  msg: "No comment body provided",
+                });
+              });
+          });
         });
       });
     });
