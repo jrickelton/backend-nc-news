@@ -225,6 +225,19 @@ describe("/api", () => {
                 });
               });
           });
+          describe("?sort_by=", () => {
+            test(":) GET /api/articles/1/comments?sort_by=author -> status: 200, returns array of comments for the given article sorted by author", () => {
+              return request(app)
+                .get("/api/articles/1/comments?sort_by=author")
+                .expect(200)
+                .then(({ body }) => {
+                  expect(body.comments).toHaveLength(13);
+                  expect(body.comments).toBeSortedBy("author", {
+                    descending: true,
+                  });
+                });
+            });
+          });
         });
         describe("POST", () => {
           test(':) POST /api/articles/1/comments -> status: 200, and new comment object when valid new comment object { username: "butter_bridge" body: "test comment" } posted. Also expect "comments" table to be updated', () => {

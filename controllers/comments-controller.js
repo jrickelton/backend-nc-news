@@ -22,7 +22,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 exports.getArticleCommentsByArticleId = (req, res, next) => {
   Promise.all([
     checkArticleExists(req.params.article_id),
-    fetchCommentsByArticleId(req.params.article_id),
+    fetchCommentsByArticleId(req.params.article_id, req.query),
   ])
 
     .then((data) => {
