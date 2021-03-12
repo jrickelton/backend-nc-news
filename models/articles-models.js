@@ -63,10 +63,6 @@ checkArticleExists = ({ article_id }) => {
     .returning("*")
     .then((data) => {
       if (!data.length) {
-        res.send({
-          status: 404,
-          msg: `No article found with article_id: ${article_id}`,
-        });
         return Promise.reject({
           status: 404,
           msg: `No article found with article_id: ${article_id}`,

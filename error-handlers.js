@@ -11,8 +11,7 @@ exports.handle404s = (err, req, res, next) => {
         msg: "Not found",
       },
     });
-  }
-  if (err.status === 404) {
+  } else if (err.status === 404) {
     res.status(404).send({ err });
   } else next(err);
 };

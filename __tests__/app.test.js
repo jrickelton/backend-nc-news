@@ -200,7 +200,7 @@ describe("/api", () => {
               });
           });
 
-          test(":( POST /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article is not found", () => {
+          test(":( POST /api/articles/999 -> status: 404, msg: 'Not found' when article is not found", () => {
             return request(app)
               .post("/api/articles/999/comments")
               .send({ username: "butter_bridge", body: "test comment" })
@@ -209,6 +209,18 @@ describe("/api", () => {
                 expect(body.err).toMatchObject({
                   status: 404,
                   msg: "Not found",
+                });
+              });
+          });
+          test(":( POST /api/articles/not_an_article_id/comments -> status: 400, msg: 'Bad request' when invalid article_id passed", () => {
+            return request(app)
+              .post("/api/articles/not_an_article_id/comments")
+              .send({ username: "butter_bridge", body: "test comment" })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 400,
+                  msg: "Bad request",
                 });
               });
           });
