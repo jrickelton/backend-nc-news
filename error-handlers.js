@@ -12,6 +12,7 @@ exports.handle404s = (err, req, res, next) => {
       },
     });
   } else if (err.status === 404) {
+    console.log(err);
     res.status(404).send({ err });
   } else next(err);
 };

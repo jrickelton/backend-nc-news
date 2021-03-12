@@ -1,6 +1,6 @@
 const { dbConnection } = require("../db/connection");
 
-writeCommentByArticleId = ({ article_id }, { username, body }) => {
+exports.writeCommentByArticleId = ({ article_id }, { username, body }) => {
   if (isNaN(article_id)) {
     return Promise.reject({
       status: 400,
@@ -26,4 +26,18 @@ writeCommentByArticleId = ({ article_id }, { username, body }) => {
     });
 };
 
-module.exports = { writeCommentByArticleId };
+exports.fetchCommentsByArticleId = (article_id) => {
+  return dbConnection
+    .select("*")
+    .from("comments")
+    .where("article_id", article_id)
+    .returning("*")
+    .then((commentsData) => {
+      if (!commentsData.length) {
+        return Promise.reject({
+          status: 404,
+          msg: `This article (article id: ${article_id}) currently has no comments`,
+        });
+      } else return commentsData;
+    });
+};

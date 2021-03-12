@@ -172,6 +172,34 @@ describe("/api", () => {
         });
       });
       describe("/comments", () => {
+        describe("GET", () => {
+          test(":) GET /api/articles/1/comments -> status: 200 and array of comments for the given article id", () => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).toHaveLength(13);
+                expect(body.comments[0]).toMatchObject({
+                  comment_id: expect.any(Number),
+                  votes: expect.any(Number),
+                  created_at: expect.any(String),
+                  author: expect.any(String),
+                  body: expect.any(String),
+                });
+              });
+          });
+          test.only(':( GET /api/articles/2/comments -> status: 404, msg: "This article (article id: 2) currently has no comments" for a valid article with no comments', () => {
+            return request(app)
+              .get("/api/articles/2/comments")
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 404,
+                  msg: "This article (article id: 2) currently has no comments",
+                });
+              });
+          });
+        });
         describe("POST", () => {
           test(':) POST /api/articles/1/comments -> status: 200, and new comment object when valid new comment object { username: "butter_bridge" body: "test comment" } posted. Also expect "comments" table to be updated', () => {
             return request(app)
