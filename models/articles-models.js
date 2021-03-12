@@ -38,8 +38,7 @@ const updateArticleVotes = (article_id, vote) => {
           status: 404,
           msg: `No article found with article_id: ${article_id}`,
         });
-      }
-      votesData[0].votes += vote;
+      } else votesData[0].votes += vote;
       return dbConnection
         .select("votes")
         .from("articles")
