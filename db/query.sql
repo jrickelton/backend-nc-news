@@ -1,3 +1,3 @@
 \c nc_news
 
-SELECT * FROM comments WHERE article_id = 2;
+SELECT * FROM comments;

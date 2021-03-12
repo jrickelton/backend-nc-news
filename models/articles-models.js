@@ -55,4 +55,24 @@ const updateArticleVotes = (article_id, vote) => {
     });
 };
 
-module.exports = { fetchArticleById, updateArticleVotes };
+checkArticleExists = ({ article_id }) => {
+  return dbConnection
+    .select("*")
+    .from("articles")
+    .where("article_id", parseInt(article_id))
+    .returning("*")
+    .then((data) => {
+      if (!data.length) {
+        res.send({
+          status: 404,
+          msg: `No article found with article_id: ${article_id}`,
+        });
+        return Promise.reject({
+          status: 404,
+          msg: `No article found with article_id: ${article_id}`,
+        });
+      } else return data;
+    });
+};
+
+module.exports = { fetchArticleById, updateArticleVotes, checkArticleExists };

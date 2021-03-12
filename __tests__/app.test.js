@@ -173,19 +173,42 @@ describe("/api", () => {
       });
       describe("/comments", () => {
         describe("POST", () => {
-          test(':) POST /api/articles/2/comments -> status: 200, and new comment object when valid new comment object { username: "butter_bridge" body: "test comment" } posted', () => {
+          test(':) POST /api/articles/1/comments -> status: 200, and new comment object when valid new comment object { username: "butter_bridge" body: "test comment" } posted. Also expect "comments" table to be updated', () => {
             return request(app)
-              .post("/api/articles/2/comments")
+              .post("/api/articles/1/comments")
               .send({ username: "butter_bridge", body: "test comment" })
               .expect(200)
               .then(({ body }) => {
-                expect(body).toMatchObject({
-                  comment_id: 1,
+                expect(body.comment[0]).toMatchObject({
+                  comment_id: 19,
                   author: "butter_bridge",
-                  article_id: 2,
+                  article_id: 1,
                   votes: 0,
-                  created_at: expect.any(Date()),
                   body: "test comment",
+                });
+                expect(new Date(body.comment[0].created_at)).toEqual(
+                  expect.any(Date)
+                );
+              })
+              .then(() => {
+                return dbConnection
+                  .select("*")
+                  .from("comments")
+                  .then((data) => {
+                    expect(data.length).toBe(19);
+                  });
+              });
+          });
+
+          test(":( POST /api/articles/999 -> status: 404, msg: 'No article found with article_id: 999' when article is not found", () => {
+            return request(app)
+              .post("/api/articles/999/comments")
+              .send({ username: "butter_bridge", body: "test comment" })
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.err).toMatchObject({
+                  status: 404,
+                  msg: "Not found",
                 });
               });
           });
