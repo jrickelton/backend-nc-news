@@ -3,6 +3,7 @@ const {
   renameKey,
   createRefObject,
   addKeyFromRefObject,
+  coerceObjValuesToNums,
 } = require("../db/utils/data-manipulation");
 
 describe("formatTimestamp", () => {
@@ -510,5 +511,32 @@ describe("addKeyFromRefObject", () => {
         addKeyFromRefObject(input, refObject, "belongs_to", "article_id")[0]
       ).not.toBe(input[0]);
     });
+  });
+});
+
+describe("coerceObjValuesToNumbers", () => {
+  it("should return an empty object when called with an array containing an empty object", () => {
+    expect(coerceObjValuesToNums([{}])).toEqual([{}]);
+  });
+  it("should return an object untouched if there are no number values stored as strings", () => {
+    expect(coerceObjValuesToNums([{ a: "a", b: "b" }])).toEqual([
+      {
+        a: "a",
+        b: "b",
+      },
+    ]);
+  });
+  it("should return an object after coercing any values which are numbers stored as strings into Number data types", () => {
+    expect(coerceObjValuesToNums([{ a: "1" }])).toEqual([{ a: 1 }]);
+  });
+  it("should work on all items in an array", () => {
+    expect(
+      coerceObjValuesToNums([{ a: "1" }, { b: "2" }, { c: "c" }, { d: 4 }])
+    ).toEqual([{ a: 1 }, { b: 2 }, { c: "c" }, { d: 4 }]);
+  });
+  it("should not mutate original array or objects within", () => {
+    const input = [{ a: "1" }];
+    expect(coerceObjValuesToNums(input)).not.toBe(input);
+    expect(coerceObjValuesToNums(input)[0]).not.toBe(input[0]);
   });
 });

@@ -1,5 +1,6 @@
 const articlesRouter = require("express").Router();
 const {
+  getAllArticles,
   getArticleById,
   patchArticleById,
 } = require("../controllers/articles-controllers");
@@ -9,9 +10,16 @@ const {
   getArticleCommentsByArticleId,
 } = require("../controllers/comments-controller");
 
-articlesRouter.get("/:article_id", getArticleById);
-articlesRouter.patch("/:article_id", patchArticleById);
-articlesRouter.get("/:article_id/comments", getArticleCommentsByArticleId);
-articlesRouter.post("/:article_id/comments", postCommentByArticleId);
+articlesRouter.route("/").get(getAllArticles);
+
+articlesRouter
+  .route("/:article_id")
+  .get(getArticleById)
+  .patch(patchArticleById);
+
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getArticleCommentsByArticleId)
+  .post(postCommentByArticleId);
 
 module.exports = { articlesRouter };

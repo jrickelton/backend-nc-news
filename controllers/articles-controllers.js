@@ -1,8 +1,17 @@
 const {
+  fetchAllArticles,
   fetchArticleById,
   updateArticleVotes,
   checkArticleExists,
 } = require("../models/articles-models");
+
+exports.getAllArticles = (req, res, next) => {
+  return fetchAllArticles(req.query)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
+};
 
 exports.getArticleById = (req, res, next) => {
   return fetchArticleById(req.params.article_id)

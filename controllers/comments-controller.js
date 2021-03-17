@@ -29,7 +29,6 @@ exports.getArticleCommentsByArticleId = (req, res, next) => {
       res.send({ comments: data[1] }).status(200);
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };

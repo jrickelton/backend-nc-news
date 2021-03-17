@@ -1,4 +1,3 @@
-process.env.NODE_ENV = "test";
 const {
   topicData,
   articleData,
@@ -18,15 +17,12 @@ exports.seed = function (knex) {
     .rollback()
     .then(() => knex.migrate.latest())
     .then(() => {
-      return knex
-        .insert(topicData)
-        .into("topics")
-        .returning("*")
-        .then((insertedTopics) => {
-          return knex.insert(userData).into("users").returning("*");
-        });
+      return knex.insert(topicData).into("topics").returning("*");
     })
-    .then((insertedUsers) => {
+    .then(() => {
+      return knex.insert(userData).into("users").returning("*");
+    })
+    .then(() => {
       const formattedArticleData = formatTimestamp(articleData);
       return knex.insert(formattedArticleData).into("articles").returning("*");
     })

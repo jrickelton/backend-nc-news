@@ -1,18 +1,13 @@
 const express = require("express");
 const app = express();
 const { apiRouter } = require("./routes/apiRouter");
-const {
-  handle204s,
-  handle400s,
-  handle404s,
-  handle500s,
-} = require("./error-handlers");
+const { handle400s, handle404s, handle500s } = require("./error-handlers");
 
 app.use(express.json());
 app.use("/api", apiRouter);
 
-app.use("/", handle404s); //can't get app.all to work?
-app.use("/", handle400s);
-app.use("/", handle500s);
+app.use(handle404s); //can't get app.all to work?
+app.use(handle400s);
+app.use(handle500s);
 
 module.exports = app;

@@ -1,4 +1,27 @@
 const { dbConnection } = require("../db/connection");
+const { coerceObjValuesToNums } = require("../db/utils/data-manipulation");
+
+const fetchAllArticles = ({ sort_by, order_by }) => {
+  return dbConnection
+    .select(
+      "articles.title",
+      "articles.article_id",
+      "articles.body",
+      "articles.topic",
+      "articles.created_at",
+      "articles.votes",
+      "articles.author"
+    )
+    .count({ comment_count: "comment_id" })
+    .count()
+    .from("articles")
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .groupBy("articles.article_id")
+    .orderBy(sort_by || "articles.created_at", order_by || "desc")
+    .then((articles) => {
+      return coerceObjValuesToNums(articles);
+    });
+};
 
 const fetchArticleById = (article_id) => {
   if (isNaN(article_id)) {
@@ -50,15 +73,13 @@ const updateArticleVotes = (article_id, vote) => {
       .where("articles.article_id", parseInt(article_id))
       .increment("votes", vote)
       .returning("*")
-      .then((data) => {
+      .then(() => {
         return fetchArticleById(article_id);
       });
 };
 
-checkArticleExists = (article_id) => {
-  return dbConnection
-    .select("*")
-    .from("articles")
+const checkArticleExists = (article_id) => {
+  return dbConnection("articles")
     .where("article_id", parseInt(article_id))
     .returning("*")
     .then((data) => {
@@ -71,4 +92,9 @@ checkArticleExists = (article_id) => {
     });
 };
 
-module.exports = { fetchArticleById, updateArticleVotes, checkArticleExists };
+module.exports = {
+  fetchAllArticles,
+  fetchArticleById,
+  updateArticleVotes,
+  checkArticleExists,
+};
