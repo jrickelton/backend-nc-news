@@ -1,6 +1,7 @@
 const {
   writeCommentByArticleId,
   fetchCommentsByArticleId,
+  removeCommentsById,
 } = require("../models/comments-models");
 const { checkArticleExists } = require("../models/articles-models");
 const { checkUsernameExists } = require("../models/users-models");
@@ -24,7 +25,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.getArticleCommentsByArticleId = (req, res, next) => {
-  Promise.all([
+  return Promise.all([
     checkArticleExists(req.params.article_id),
     fetchCommentsByArticleId(req.params.article_id, req.query),
   ])
@@ -44,6 +45,17 @@ exports.patchCommentsById = (req, res, next) => {
   ])
     .then((data) => {
       res.status(200).send({ comment: data[1] });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentsById = (req, res, next) => {
+  return Promise.all([
+    checkCommentExists(req.params),
+    removeCommentsById(req.params),
+  ])
+    .then((data) => {
+      res.sendStatus(201);
     })
     .catch(next);
 };

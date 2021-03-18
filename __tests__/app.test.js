@@ -467,49 +467,84 @@ describe("/api", () => {
   });
   describe("/comments", () => {
     describe("/:comment_id", () => {
-      test(":) PATCH api/comment/1 accepts object with body { inc_votes: 1 } -> status: 200 and responds with updated comment object", () => {
-        return request(app)
-          .patch("/api/comments/1")
-          .send({ inc_votes: 1 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.comment[0]).toMatchObject({
-              comment_id: 1,
-              author: "butter_bridge",
-              article_id: 9,
-              votes: 17,
-              created_at: "2017-11-22T12:36:03.389Z",
-              body:
-                "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      describe("PATCH", () => {
+        test(":) PATCH api/comment/1 accepts object with body { inc_votes: 1 } -> status: 200 and responds with updated comment object", () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comment[0]).toMatchObject({
+                comment_id: 1,
+                author: "butter_bridge",
+                article_id: 9,
+                votes: 17,
+                created_at: "2017-11-22T12:36:03.389Z",
+                body:
+                  "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+              });
             });
-          });
+        });
+        test(':( PATCH api/comments/1 with { author: "abc" } -> 400: errObj', () => {
+          return request(app)
+            .patch("/api/comments/1")
+            .send({ author: "abc" })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 400: expect.any(Object) });
+            });
+        });
+        test(":( PATCH api/comments/999 -> 404: errObj", () => {
+          return request(app)
+            .patch("/api/comments/999")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+        test(":( PATCH api/comments/not_a_number -> 400: errObj", () => {
+          return request(app)
+            .patch("/api/comments/not_a_number")
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 400: expect.any(Object) });
+            });
+        });
       });
-      test(':( PATCH api/comments/1 with { author: "abc" } -> 400: errObj', () => {
-        return request(app)
-          .patch("/api/comments/1")
-          .send({ author: "abc" })
-          .expect(400)
-          .then(({ body }) => {
-            expect(body).toMatchObject({ 400: expect.any(Object) });
-          });
-      });
-      test(":( PATCH api/comments/999 -> 404: errObj", () => {
-        return request(app)
-          .patch("/api/comments/999")
-          .send({ inc_votes: 1 })
-          .expect(404)
-          .then(({ body }) => {
-            expect(body).toMatchObject({ 404: expect.any(Object) });
-          });
-      });
-      test(":( PATCH api/comments/not_a_number -> 400: errObj", () => {
-        return request(app)
-          .patch("/api/comments/not_a_number")
-          .send({ inc_votes: 1 })
-          .expect(400)
-          .then(({ body }) => {
-            expect(body).toMatchObject({ 400: expect.any(Object) });
-          });
+      describe("DELETE", () => {
+        test(":) DELETE /api/comments/1 -> status 204 and no content, comment is deleted from db", () => {
+          return request(app)
+            .delete("/api/comments/1")
+            .expect(201)
+            .then(() => {
+              return dbConnection
+                .select("*")
+                .from("comments")
+                .where("comments.comment_id", 1)
+                .returning("*")
+                .then((data) => {
+                  expect(data).toEqual([]);
+                });
+            });
+        });
+        test(":( DELETE /api/comments/999 -> 404: errObj", () => {
+          return request(app)
+            .delete("/api/comments/999")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+        test(":( DELETE /api/comments/not_a_number -> 400: errObj", () => {
+          return request(app)
+            .delete("/api/comments/not_a_number")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 400: expect.any(Object) });
+            });
+        });
       });
     });
   });

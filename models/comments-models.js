@@ -70,3 +70,7 @@ exports.checkCommentExists = ({ comment_id }) => {
       } else return data;
     });
 };
+
+exports.removeCommentsById = ({ comment_id }) => {
+  return dbConnection("comments").where("comment_id", comment_id).delete();
+};
