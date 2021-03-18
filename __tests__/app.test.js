@@ -10,6 +10,16 @@ afterAll(() => {
 });
 
 describe("/api", () => {
+  describe("GET", () => {
+    test("GET /api responds with all the available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+        });
+    });
+  });
   describe("/topics", () => {
     describe("GET", () => {
       test(":) GET /api/topics -> status: 200, and array of topics objects", () => {
