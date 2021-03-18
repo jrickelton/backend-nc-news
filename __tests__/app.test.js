@@ -128,6 +128,84 @@ describe("/api", () => {
           });
         });
       });
+      describe("?author=", () => {
+        test(":) GET /api/article?author=butter_bridge-> status: 200 and responds with array of article objects with the author butter_bridge", () => {
+          return request(app)
+            .get("/api/articles?author=butter_bridge")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).toHaveLength(3);
+              expect(body.articles[0]).toMatchObject({
+                body: "I find this existence challenging",
+                comment_count: 13,
+                created_at: "2018-11-15T12:21:54.171Z",
+                title: "Living in the shadow of a great man",
+                article_id: 1,
+
+                votes: 100,
+                author: "butter_bridge",
+              });
+              body.articles.forEach((article) => {
+                expect(article.author).toBe("butter_bridge");
+              });
+            });
+        });
+        test(":( GET /api/article?author=lurker -> 404: errObj where user exists but has not posted any articles", () => {
+          return request(app)
+            .get("/api/articles?author=lurker")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+        test(":( GET /api/article?author=not_a_user -> 404: errObj where user does not exist", () => {
+          return request(app)
+            .get("/api/articles?author=not_a_user")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+      });
+      describe("?topic=", () => {
+        test(":) GET /api/article?topic=mitch -> status: 200 and responds with array of article objects with the topic mitch ", () => {
+          return request(app)
+            .get("/api/articles?topic=mitch")
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).toHaveLength(11);
+              expect(body.articles[0]).toMatchObject({
+                article_id: 1,
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                comment_count: 13,
+                created_at: "2018-11-15T12:21:54.171Z",
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                votes: 100,
+              });
+              body.articles.forEach((article) => {
+                expect(article.topic).toBe("mitch");
+              });
+            });
+        });
+        test(":( GET /api/articles?topic=paper -> 404: errObj when topic exists but no articles posted", () => {
+          return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+        test(":( GET /api/article?topic=not_a_topic -> status: 404: errObj when topic does not exist but is valid", () => {
+          return request(app)
+            .get("/api/articles?topic=not_a_topic")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 404: expect.any(Object) });
+            });
+        });
+      });
     });
     describe(":article_id", () => {
       describe("GET", () => {
@@ -385,6 +463,11 @@ describe("/api", () => {
           });
         });
       });
+    });
+  });
+  describe("/comments", () => {
+    describe("/:comment_id", () => {
+      test(":) PATCH api/comment", () => {});
     });
   });
 });

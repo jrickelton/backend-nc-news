@@ -1,14 +1,5 @@
 You are now connected to database "nc_news" as user "james".
- article_id | comment_count 
-------------+---------------
-          6 |             1
-          9 |             2
-          1 |            13
-          5 |             2
-(4 rows)
-
-                title                | article_id |         body          | topic |         created_at         | votes |    author     | comment_count 
--------------------------------------+------------+-----------------------+-------+----------------------------+-------+---------------+---------------
- They're not exactly dogs, are they? |          9 | Well? Think about it. | mitch | 1986-11-23 12:21:54.171+00 |     0 | butter_bridge |             2
-(1 row)
+ comment_id | author | article_id | votes | created_at | body 
+------------+--------+------------+-------+------------+------
+(0 rows)
 

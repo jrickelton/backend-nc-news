@@ -1,7 +1,7 @@
 const { dbConnection } = require("../db/connection");
 const { coerceObjValuesToNums } = require("../db/utils/data-manipulation");
 
-const fetchAllArticles = ({ sort_by, order_by }) => {
+const fetchAllArticles = ({ sort_by, order_by, author, topic }) => {
   return dbConnection
     .select(
       "articles.title",
@@ -13,12 +13,25 @@ const fetchAllArticles = ({ sort_by, order_by }) => {
       "articles.author"
     )
     .count({ comment_count: "comment_id" })
-    .count()
     .from("articles")
+    .where((builder) => {
+      if (author) {
+        builder.where("articles.author", author);
+      }
+      if (topic) {
+        builder.where("articles.topic", topic);
+      }
+    })
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
     .orderBy(sort_by || "articles.created_at", order_by || "desc")
     .then((articles) => {
+      if (!articles.length) {
+        return Promise.reject({
+          status: 404,
+          msg: "No articles found",
+        });
+      }
       return coerceObjValuesToNums(articles);
     });
 };
