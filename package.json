@@ -11,7 +11,7 @@
     "migrate-rollback": "knex migrate:rollback",
     "query": "psql -f ./db/query.sql > viewTables.txt",
     "test-utils": "jest __tests__/utils --watch",
-    "test-app": "jest __tests__/app --watch"
+    "test-app": "jest __tests__/app "
   },
   "repository": {
     "type": "git",

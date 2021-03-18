@@ -1,5 +1,5 @@
 exports.handle400s = (err, req, res, next) => {
-  if (err.code === "42703" || err.status === 400) {
+  if (err.code === "42703" || err.code === "22P02" || err.status === 400) {
     res.status(400).send({ 400: err });
   } else next(err);
 };
