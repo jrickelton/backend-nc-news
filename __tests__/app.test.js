@@ -11,12 +11,28 @@ afterAll(() => {
 
 describe("/api", () => {
   describe("GET", () => {
-    test("GET /api responds with all the available endpoints", () => {
+    test("GET /api responds with all the available endpoints -> 200", () => {
       return request(app)
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
+          expect(body).toMatchObject({
+            endpoints: {
+              "GET /api": {
+                description:
+                  "serves up a json representation of all the available endpoints of the api",
+              },
+              "GET /api/topics": expect.any(Object),
+              "GET /api/users/:username": expect.any(Object),
+              "GET /api/articles": expect.any(Object),
+              "GET /api/articles/:article_id": expect.any(Object),
+              "PATCH /api/articles/:article_id": expect.any(Object),
+              "GET /api/articles/:article_id/comments": expect.any(Object),
+              "POST /api/articles/:article_id/comments": expect.any(Object),
+              "PATCH /api/comments/comment_id": expect.any(Object),
+              "DELETE /api/comments/:comment_id": expect.any(Object),
+            },
+          });
         });
     });
   });
