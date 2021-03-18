@@ -36,6 +36,17 @@ describe("/api", () => {
         });
     });
   });
+  describe("POST", () => {
+    test("POST /api -> 405: errObj", () => {
+      return request(app)
+        .post("/api")
+        .send({})
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).toMatchObject({ 405: expect.any(Object) });
+        });
+    });
+  });
   describe("/topics", () => {
     describe("GET", () => {
       test(":) GET /api/topics -> status: 200, and array of topics objects", () => {

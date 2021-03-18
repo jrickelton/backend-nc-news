@@ -13,6 +13,10 @@ exports.handle404s = (err, req, res, next) => {
   } else next(err);
 };
 
+exports.handle405s = (req, res, next) => {
+  res.status(405).send({ 405: { status: 405, msg: "Method not allowed" } });
+};
+
 exports.handle500s = (err, req, res, next) => {
   console.log(err, "<---- unhandled error?");
   res.status(500).send({ 500: err });

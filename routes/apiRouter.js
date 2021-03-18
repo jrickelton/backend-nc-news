@@ -6,8 +6,9 @@ const { articlesRouter } = require("./articlesRouter");
 const { commentsRouter } = require("./commentsRouter");
 
 const { getEndpoints } = require("../controllers/api-controllers");
+const { handle405s } = require("../error-handlers");
 
-apiRouter.route("/").get(getEndpoints);
+apiRouter.route("/").get(getEndpoints).all(handle405s);
 
 apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/users", usersRouter);

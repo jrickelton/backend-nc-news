@@ -4,6 +4,7 @@ const {
   getArticleById,
   patchArticleById,
 } = require("../controllers/articles-controllers");
+const { handle405s } = require("../error-handlers");
 
 const {
   postCommentByArticleId,
