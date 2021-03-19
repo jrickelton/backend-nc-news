@@ -8,6 +8,7 @@ const { handle405s } = require("../error-handlers");
 commentsRouter
   .route("/:comment_id")
   .patch(patchCommentsById)
-  .delete(deleteCommentsById);
+  .delete(deleteCommentsById)
+  .all(handle405s);
 
 module.exports = { commentsRouter };

@@ -36,10 +36,36 @@ describe("/api", () => {
         });
     });
   });
-  describe("POST", () => {
-    test("POST /api -> 405: errObj", () => {
+  describe("Methods not allowed", () => {
+    test(":( POST /api -> 405: errObj (Method not allowed)", () => {
       return request(app)
         .post("/api")
+        .send({})
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).toMatchObject({ 405: expect.any(Object) });
+        });
+    });
+    test(":( PATCH /api -> 405: errObj (Method not allowed)", () => {
+      return request(app)
+        .patch("/api")
+        .send({})
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).toMatchObject({ 405: expect.any(Object) });
+        });
+    });
+    test(":( DELETE /api -> 405: errObj (Method not allowed) ", () => {
+      return request(app)
+        .delete("/api")
+        .expect(405)
+        .then(({ body }) => {
+          expect(body).toMatchObject({ 405: expect.any(Object) });
+        });
+    });
+    test(":( PUT /api -> 405: errObj (Method not allowed)", () => {
+      return request(app)
+        .put("/api")
         .send({})
         .expect(405)
         .then(({ body }) => {
@@ -65,11 +91,48 @@ describe("/api", () => {
           });
       });
     });
+    describe("Methods not allowed", () => {
+      test(":( POST /api/topics -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .post("/api/topics")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( PATCH /api/topics -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .patch("/api/topics")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( DELETE /api/topics -> 405: errObj (Method not allowed) ", () => {
+        return request(app)
+          .delete("/api/topics")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( PUT /api/topics -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .put("/api/topics")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+    });
   });
   describe("/users", () => {
     describe("/:username", () => {
       describe("GET", () => {
-        test(":) GET /api/users/butter_bridge -> status: 200, and user object corresponding to parametric endpoint when user is found", () => {
+        test(":) GET /api/articles -> status: 200, and user object corresponding to parametric endpoint when user is found", () => {
           return request(app)
             .get("/api/users/butter_bridge")
             .expect(200)
@@ -94,6 +157,43 @@ describe("/api", () => {
               expect(body).toMatchObject({
                 404: expect.any(Object),
               });
+            });
+        });
+      });
+      describe("Methods not allowed", () => {
+        test(":( POST /api/users/butter_bridge -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .post("/api/users/butter_bridge")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( PATCH /api/users/butter_bridge -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .patch("/api/users/butter_bridge")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( DELETE /api/users/butter_bridge -> 405: errObj (Method not allowed) ", () => {
+          return request(app)
+            .delete("/api/users/butter_bridge")
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( PUT /api/users/butter_bridge -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .put("/api/users/butter_bridge")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
             });
         });
       });
@@ -244,6 +344,43 @@ describe("/api", () => {
         });
       });
     });
+    describe("Methods not allowed", () => {
+      test(":( POST /api/articles -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .post("/api/articles")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( PATCH /api/articles -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .patch("/api/articles")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( DELETE /api/articles -> 405: errObj (Method not allowed) ", () => {
+        return request(app)
+          .delete("/api/articles")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+      test(":( PUT /api/articles -> 405: errObj (Method not allowed)", () => {
+        return request(app)
+          .put("/api/articles")
+          .send({})
+          .expect(405)
+          .then(({ body }) => {
+            expect(body).toMatchObject({ 405: expect.any(Object) });
+          });
+      });
+    });
     describe(":article_id", () => {
       describe("GET", () => {
         test(":) GET /api/articles/1 -> status: 200, and article object corresponding to parametric endpoint when article is found", () => {
@@ -339,6 +476,34 @@ describe("/api", () => {
               expect(body).toMatchObject({
                 400: expect.any(Object),
               });
+            });
+        });
+      });
+      describe("Methods not allowed", () => {
+        test(":( POST /api/articles/1 -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .post("/api/articles/1")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( DELETE /api/articles/1 -> 405: errObj (Method not allowed) ", () => {
+          return request(app)
+            .delete("/api/articles/1")
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( PUT /api/articles/1 -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .put("/api/articles/1")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
             });
         });
       });
@@ -499,6 +664,34 @@ describe("/api", () => {
               });
           });
         });
+        describe("Methods not allowed", () => {
+          test(":( PATCH /api/articles/1/comments -> 405: errObj (Method not allowed)", () => {
+            return request(app)
+              .patch("/api/articles/1/comments")
+              .send({})
+              .expect(405)
+              .then(({ body }) => {
+                expect(body).toMatchObject({ 405: expect.any(Object) });
+              });
+          });
+          test(":( DELETE /api/articles/1/comments -> 405: errObj (Method not allowed) ", () => {
+            return request(app)
+              .delete("/api/articles/1/comments")
+              .expect(405)
+              .then(({ body }) => {
+                expect(body).toMatchObject({ 405: expect.any(Object) });
+              });
+          });
+          test(":( PUT /api/users/butter_bridge -> 405: errObj (Method not allowed)", () => {
+            return request(app)
+              .put("/api/users/butter_bridge")
+              .send({})
+              .expect(405)
+              .then(({ body }) => {
+                expect(body).toMatchObject({ 405: expect.any(Object) });
+              });
+          });
+        });
       });
     });
   });
@@ -580,6 +773,34 @@ describe("/api", () => {
             .expect(400)
             .then(({ body }) => {
               expect(body).toMatchObject({ 400: expect.any(Object) });
+            });
+        });
+      });
+      describe("Methods not allowed", () => {
+        test(":( GET /api/comments/1 -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .get("/api/comments/1")
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( POST /api/comments/1 -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .post("/api/comments/1")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
+            });
+        });
+        test(":( PUT /api/comments/1 -> 405: errObj (Method not allowed)", () => {
+          return request(app)
+            .put("/api/comments/1")
+            .send({})
+            .expect(405)
+            .then(({ body }) => {
+              expect(body).toMatchObject({ 405: expect.any(Object) });
             });
         });
       });
