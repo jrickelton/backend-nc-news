@@ -22,7 +22,7 @@ The database is **PSQL** and interacted with **KNEX**.
 3. Run `npm i` to install dependencies: express.js, knex, pg.
 4. Run `npm start`
 5. Run `knex init` to create a `knexfile.js` and include the following config:
-const { DB_URL } = process.env;
+`const { DB_URL } = process.env;
 const ENV = process.env.NODE_ENV || "development";
 
 const baseConfig = {
@@ -54,7 +54,7 @@ const customConfig = {
   },
 };
 
-module.exports = { ...customConfig[ENV], ...baseConfig };
+module.exports = { ...customConfig[ENV], ...baseConfig };`
 
 *Note* If you are running on Linux you may need to include a user and password as properties on the development and test objects
 
