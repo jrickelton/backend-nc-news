@@ -2,7 +2,7 @@ const comments = require("../data/test-data/comments");
 
 exports.up = function (knex) {
   return knex.schema.createTable("comments", (commentsTable) => {
-    commentsTable.increments("comment_id").primary().notNullable();
+    commentsTable.increments("comment_id").primary();
     commentsTable.string("author").references("users.username").notNullable();
     commentsTable
       .integer("article_id")
@@ -13,7 +13,7 @@ exports.up = function (knex) {
       .timestamp("created_at")
       .defaultTo(knex.fn.now())
       .notNullable();
-    commentsTable.string("body").notNullable();
+    commentsTable.text("body").notNullable();
   });
 };
 

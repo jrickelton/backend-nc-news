@@ -11,7 +11,10 @@
     "migrate-rollback": "knex migrate:rollback",
     "query": "psql -f ./db/query.sql > viewTables.txt",
     "test-utils": "jest __tests__/utils --watch",
-    "test-app": "jest __tests__/app "
+    "test-app": "jest __tests__/app ",
+    "seed:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex seed:run",
+    "migrate-latest:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest",
+    "migrate-rollback:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback"
   },
   "repository": {
     "type": "git",
