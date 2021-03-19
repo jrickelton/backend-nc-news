@@ -10,8 +10,9 @@ The database is **PSQL** and interacted with **KNEX**.
 
 ## Dependencies
 
-- Knex v0.95.2
-- PostgreSQL v12.6
+- express v^4.17.1,
+- knex v^0.95.2
+- postgreSQL v^8.5.1
 
 ## Instructions
 
@@ -21,9 +22,10 @@ The database is **PSQL** and interacted with **KNEX**.
 2. Navigate to the cloned repo in your terminal
 3. Run `npm i` to install dependencies: express.js, knex, pg.
 4. Run `npm start`
-5. Run `knex init` to create a `knexfile.js` and include the following config:
+5. Run `knex init` to create a `knexfile.js` and update the config:
 
-`const { DB_URL } = process.env;
+```
+const { DB_URL } = process.env;
 const ENV = process.env.NODE_ENV || "development";
 
 const baseConfig = {
@@ -56,12 +58,13 @@ const customConfig = {
 };
 
 module.exports = { ...customConfig[ENV], ...baseConfig };`
+```
 
-*Note* If you are running on Linux you may need to include a user and password as properties on the development and test objects
+_Note_ If you are running on Linux you may need to include a user and password as properties on the development and test objects
 
 7. Open a web browser and navigate to `localhost:9090/api` to view a JSON file which lists the available endpoints and descriptions of their contents.
 
 ## Testing
+
 1. Install `jest`, `jest-sorted` and `supertest`
 2. Run `npm run test-app`
-

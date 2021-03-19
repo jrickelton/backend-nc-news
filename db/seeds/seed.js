@@ -46,8 +46,3 @@ exports.seed = function (knex) {
       console.log(err);
     });
 };
-
-//format created_at timestamp
-//change created_by to author
-//make createRefObject func
-//add article_id based on belongs_to
