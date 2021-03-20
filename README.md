@@ -4,6 +4,8 @@ An API to access data programmatically - mimicking a real world back end service
 
 The database is **PSQL** and interacted with **KNEX**.
 
+Hosted version at https://jrickelton-nc-news-app.herokuapp.com/api
+
 ## Requirements
 
 - node.js v14.15.5
