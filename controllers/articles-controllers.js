@@ -8,7 +8,7 @@ const { checkTopicExists } = require("../models/topics-models");
 const { checkUsernameExists } = require("../models/users-models");
 
 exports.getArticleById = (req, res, next) => {
-  return fetchArticleById(req.params.article_id)
+  return fetchArticleById(req.params)
     .then((articleData) => {
       res.status(200).send({ article: articleData });
     })
@@ -17,8 +17,8 @@ exports.getArticleById = (req, res, next) => {
 
 exports.patchArticleById = (req, res, next) => {
   return Promise.all([
-    checkArticleExists(req.params.article_id),
-    updateArticleVotes(req.params.article_id, req.body.inc_votes),
+    checkArticleExists(req.params),
+    updateArticleVotes(req.params, req.body),
   ])
     .then((data) => {
       res.status(200).send({ article: data[1] });
@@ -28,7 +28,7 @@ exports.patchArticleById = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const promiseArray = [
-    checkUsernameExists(req.query.author),
+    checkUsernameExists(req.query),
     checkTopicExists(req.query),
     fetchAllArticles(req.query),
   ];

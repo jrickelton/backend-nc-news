@@ -36,7 +36,7 @@ const fetchAllArticles = ({ sort_by, order_by, author, topic }) => {
     });
 };
 
-const fetchArticleById = (article_id) => {
+const fetchArticleById = ({ article_id }) => {
   if (isNaN(article_id)) {
     return Promise.reject({
       status: 400,
@@ -68,8 +68,9 @@ const fetchArticleById = (article_id) => {
       });
 };
 
-const updateArticleVotes = (article_id, vote) => {
-  if (!vote) {
+const updateArticleVotes = ({ article_id }, { inc_votes }) => {
+  console.log(article_id, inc_votes);
+  if (!inc_votes) {
     return Promise.reject({
       status: 400,
       msg: "Bad request",
@@ -83,17 +84,17 @@ const updateArticleVotes = (article_id, vote) => {
     return dbConnection
       .select("*")
       .from("articles")
-      .where("articles.article_id", parseInt(article_id))
-      .increment("votes", vote)
+      .where("articles.article_id", article_id)
+      .increment("votes", inc_votes)
       .returning("*")
       .then(() => {
-        return fetchArticleById(article_id);
+        return fetchArticleById({ article_id });
       });
 };
 
-const checkArticleExists = (article_id) => {
+const checkArticleExists = ({ article_id }) => {
   return dbConnection("articles")
-    .where("article_id", parseInt(article_id))
+    .where("article_id", article_id)
     .returning("*")
     .then((data) => {
       if (!data.length) {

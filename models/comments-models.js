@@ -25,7 +25,7 @@ exports.writeCommentByArticleId = ({ article_id }, { username, body }) => {
     });
 };
 
-exports.fetchCommentsByArticleId = (article_id, { sort_by, order_by }) => {
+exports.fetchCommentsByArticleId = ({ article_id }, { sort_by, order_by }) => {
   return dbConnection
     .select("*")
     .from("comments")

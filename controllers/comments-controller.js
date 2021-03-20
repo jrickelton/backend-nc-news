@@ -12,8 +12,8 @@ const {
 
 exports.postCommentByArticleId = (req, res, next) => {
   Promise.all([
-    checkArticleExists(req.params.article_id),
-    checkUsernameExists(req.body.username),
+    checkArticleExists(req.params),
+    checkUsernameExists(req.body),
     writeCommentByArticleId(req.params, req.body),
   ])
     .then((data) => {
@@ -26,8 +26,8 @@ exports.postCommentByArticleId = (req, res, next) => {
 
 exports.getArticleCommentsByArticleId = (req, res, next) => {
   return Promise.all([
-    checkArticleExists(req.params.article_id),
-    fetchCommentsByArticleId(req.params.article_id, req.query),
+    checkArticleExists(req.params),
+    fetchCommentsByArticleId(req.params, req.query),
   ])
 
     .then((data) => {
