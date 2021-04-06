@@ -69,7 +69,6 @@ const fetchArticleById = ({ article_id }) => {
 };
 
 const updateArticleVotes = ({ article_id }, { inc_votes }) => {
-  console.log(article_id, inc_votes);
   if (!inc_votes) {
     return Promise.reject({
       status: 400,
