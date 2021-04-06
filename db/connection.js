@@ -1,6 +1,6 @@
 const dbConnection = require("knex");
 const ENV = process.env.NODE_ENV || "development";
-console.log(ENV);
+
 const dbConfig =
   ENV === "production"
     ? {
