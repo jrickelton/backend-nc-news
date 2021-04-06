@@ -30,7 +30,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "knex": "^0.95.2",
+    "i": "^0.3.6",
+    "knex": "^0.95.4",
     "pg": "^8.5.1"
   },
   "devDependencies": {
